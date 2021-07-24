@@ -1,0 +1,8 @@
+git proxy setup
+
+	git config --global --unset http.proxy
+	git config --global --unset https.proxy
+	git config --system --unset http.proxy
+	git config --system --unset https.proxy
+	git config --local --unset http.proxy
+	git config --local --unset https.proxy

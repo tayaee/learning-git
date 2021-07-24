@@ -1,0 +1,110 @@
+All about git reset:
+
+TOC
+	- edit, cancel
+	- git add, how to cancel it
+	- git commit, how to cancel it
+
+    #1 Clone master
+        in
+            origin/master       file.txt (initial)
+            master
+            staging
+            working
+
+        cmd
+            git clone <url>
+
+        out
+            origin/master       file.txt (initial)
+    +       master              file.txt (initial)
+            staging
+    +       working             file.txt (initial)
+
+    #2 Edit                                                          #3 Cancel changes on file
+        in                                                              in
+            origin/master       file.txt (initial)                          origin/master       file.txt (initial)
+            master              file.txt (initial)                          master              file.txt (initial)
+            staging                                                         staging
+            working             file.txt (initial)                          working             file.txt (first change)
+        cmd                                                             cmd
+            echo first>file.txt                                             git checkout -- file.txt
+        out                                                             out
+            origin/master       file.txt (initial)                          origin/master       file.txt (initial)
+            master              file.txt (initial)                          master              file.txt (initial)
+            staging                                                         staging
+    +       working             file.txt (first change)             -       working             file.txt (initial)
+
+    #4 Edd & edit                                                    #5 Cancel 'git add' on file (with keeping local 'working' change)
+        in                                                              in
+            origin/master       file.txt (initial)                          origin/master       file.txt (initial)
+            master              file.txt (initial)                          master              file.txt (initial)
+            staging                                                         staging             file.txt (first change)
+            working             file.txt (first change)                     working             file.txt (second change)
+        cmd                                                             cmd
+            git add file.txt (OR git add -all)                              git reset file.txt
+        out                                                             out
+            origin/master       file.txt (initial)                          origin/master       file.txt (initial)
+            master              file.txt (initial)                          master              file.txt (initial)
+    +       staging             file.txt (first change)             -       staging
+    +       working             file.txt (second change)                    working             file.txt (second change)
+
+                                                                    #6 Cancel 'git add' and changes on file
+                                                                        in
+                                                                            origin/master       file.txt (initial)
+                                                                            master              file.txt (initial)
+                                                                            staging             file.txt (first change)
+                                                                            working             file.txt (first change)
+                                                                        cmd
+                                                                            git reset --hard
+                                                                        out
+                                                                            origin/master       file.txt (initial)
+                                                                            master              file.txt (initial)
+                                                                    -       staging
+                                                                    -       working             file.txt (initial)
+
+    #7 Commit                                                       #8 Cancel 'git commit' with log
+        in                                                              in
+            origin/master       file.txt (initial)                          origin/master       file.txt (initial)
+            master              file.txt (initial)                          master              file.txt (first change)
+            staging             file.txt (first change)                     staging             file.txt
+            working             file.txt (second change)                    working             file.txt (second change)
+        cmd                                                             cmd
+            git commit -m "Commit message"                                  git revert <commit-id>  // working change가 있으면 에러 발생
+        out                                                             out
+            origin/master       file.txt (initial)                          origin/master       file.txt (initial)
+            master              file.txt (first change)                     master              file.txt (initial)
+            staging                                                         staging
+            working             file.txt (second change)                    working             file.txt (initial)
+
+                                                                    #9 Cancel 'git commit' with removing the last commit log (This will fail if there is any working change)
+                                                                        in
+                                                                            origin/master       file.txt (initial)
+                                                                            master              file.txt (first change)
+                                                                            staging             file.txt
+                                                                            working             file.txt (first change)
+                                                                        cmd
+                                                                            git reset <commit-id>
+                                                                        out
+                                                                            origin/master       file.txt (initial)
+                                                                            master              file.txt (initial)
+                                                                            staging             file.txt ?
+                                                                            working             file.txt (first change)
+
+                                                                    #10 Cancel commits to <commit-id> with removing commit logs (This removes all working changes) - DANGEROUS
+                                                                        in
+                                                                            origin/master       file.txt (initial)
+                                                                            master              file.txt (first change)
+                                                                            staging             file.txt
+                                                                            working             file.txt (second change)
+                                                                        cmd
+                                                                            git reset --hard <commit-id>
+                                                                        out
+                                                                            origin/master       file.txt (initial)
+                                                                            master              file.txt (initial)
+                                                                            staging             file.txt
+                                                                            working             file.txt (initial)
+
+                                                                    #11 Cancel intermediate commits (so-called, cherry picking mode)
+                                                                        cmd
+                                                                            git rebase --interactive <commit-id>

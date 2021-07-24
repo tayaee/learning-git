@@ -1,0 +1,421 @@
+	git bisect demo
+
+		md git-bisect-demo
+
+		git init .
+
+		git add Hello.java & git commit -m "Initial commit"
+
+		git add Hello.java & git commit -m "Added mul"
+
+		javac Hello.java & java Hello
+		2 + 3 = 5
+		2 * 3 = 5		<=== didn't notice this was wrong
+
+		git add Hello.java & git commit -m "Updated comment"
+
+		git add Hello.java & git commit -m "Updated comment"
+
+		git add Hello.java & git commit -m "Added div"
+		javac Hello.java & java Hello
+		2 + 3 = 5
+		2 * 3 = 5
+		2 / 3 = 0
+
+		git log --date=format:"%Y-%m-%d %H:%M:%S" --pretty=format:"%h %cd %ae %s" --graph .
+		* 2d1ce4b 2021-04-28 22:48:50 soonki.ji@gmail.com Added div				<=== I know this was good.
+		* f48d51b 2021-04-28 22:47:45 soonki.ji@gmail.com Updated comment
+		* 21a9005 2021-04-28 22:47:34 soonki.ji@gmail.com Updated comment
+		* e4f1fa2 2021-04-28 22:46:46 soonki.ji@gmail.com Added mul				<=== This has the bug.
+		* f2e57ca 2021-04-28 22:45:42 soonki.ji@gmail.com Initial commit
+
+		// help
+		git bisect --help
+			git bisect start [--term-{old,good}=<term> --term-{new,bad}=<term>] [--no-checkout] [<bad> [<good>...]] [--] [<paths>...]
+			git bisect (bad|new) [<rev>]
+			git bisect (good|old) [<rev>...]
+			git bisect terms [--term-good | --term-bad]
+			git bisect skip [(<rev>|<range>)...]
+			git bisect reset [<commit>]
+			git bisect visualize
+			git bisect replay <logfile>
+			git bisect log
+			git bisect run <cmd>...
+			git bisect help
+
+		// start pinpointing the bug for mul().
+
+		git bisect start
+
+		start git bisect visualize
+
+		git bisect bad HEAD
+
+		git bisect good f2e57ca
+
+		test with 21a9005, run git bisect bad, F5 to refresh the visualizatino
+
+----
+	// generate 50 commits
+	@for /L %a in (1, 1, 50) do @(echo %a & echo Version %a > file.txt & git add file.txt & git commit -m "Version %a")
+
+	git log --date=format:"%Y-%m-%d %H:%M:%S" --pretty=format:"%h %cd %ae %s" --graph .
+
+		* b36ee2e 2021-04-28 23:10:09 soonki.ji@gmail.com Version 50		<== bad
+		* 69bc7ee 2021-04-28 23:10:08 soonki.ji@gmail.com Version 49
+		* ba98688 2021-04-28 23:10:08 soonki.ji@gmail.com Version 48
+		* acf1259 2021-04-28 23:10:08 soonki.ji@gmail.com Version 47
+		* 8f010cd 2021-04-28 23:10:08 soonki.ji@gmail.com Version 46
+		* 67e247c 2021-04-28 23:10:08 soonki.ji@gmail.com Version 45
+		* de09e7c 2021-04-28 23:10:08 soonki.ji@gmail.com Version 44
+		* 2eb9b1a 2021-04-28 23:10:07 soonki.ji@gmail.com Version 43
+		* 2f5028b 2021-04-28 23:10:07 soonki.ji@gmail.com Version 42
+		* 06e215b 2021-04-28 23:10:07 soonki.ji@gmail.com Version 41
+		* 281fa42 2021-04-28 23:10:07 soonki.ji@gmail.com Version 40
+		* 518779c 2021-04-28 23:10:07 soonki.ji@gmail.com Version 39
+		* cbb2db3 2021-04-28 23:10:07 soonki.ji@gmail.com Version 38
+		* 30fd058 2021-04-28 23:10:07 soonki.ji@gmail.com Version 37
+		* 679896f 2021-04-28 23:10:06 soonki.ji@gmail.com Version 36
+		* f6d68ae 2021-04-28 23:10:06 soonki.ji@gmail.com Version 35
+		* b22472e 2021-04-28 23:10:06 soonki.ji@gmail.com Version 34
+		* 144890b 2021-04-28 23:10:06 soonki.ji@gmail.com Version 33
+		* cbbffce 2021-04-28 23:10:06 soonki.ji@gmail.com Version 32
+		* 91b62d9 2021-04-28 23:10:06 soonki.ji@gmail.com Version 31
+		* 6b822ee 2021-04-28 23:10:05 soonki.ji@gmail.com Version 30
+		* 349da9a 2021-04-28 23:10:05 soonki.ji@gmail.com Version 29
+		* 761f4da 2021-04-28 23:10:05 soonki.ji@gmail.com Version 28
+		* 143bbb7 2021-04-28 23:10:05 soonki.ji@gmail.com Version 27
+		* 6be509e 2021-04-28 23:10:05 soonki.ji@gmail.com Version 26
+		* 2d866c2 2021-04-28 23:10:05 soonki.ji@gmail.com Version 25
+		* 9063921 2021-04-28 23:10:03 soonki.ji@gmail.com Version 24
+		* 065460b 2021-04-28 23:10:03 soonki.ji@gmail.com Version 23
+		* 149197f 2021-04-28 23:10:03 soonki.ji@gmail.com Version 22
+		* dbe2473 2021-04-28 23:10:03 soonki.ji@gmail.com Version 21
+		* 7112300 2021-04-28 23:10:02 soonki.ji@gmail.com Version 20
+		* f045093 2021-04-28 23:10:02 soonki.ji@gmail.com Version 19
+		* d809c0a 2021-04-28 23:10:02 soonki.ji@gmail.com Version 18
+		* 99ad9bb 2021-04-28 23:10:02 soonki.ji@gmail.com Version 17
+		* 9a27e44 2021-04-28 23:10:02 soonki.ji@gmail.com Version 16
+		* fe59814 2021-04-28 23:10:02 soonki.ji@gmail.com Version 15
+		* fbce8f7 2021-04-28 23:10:02 soonki.ji@gmail.com Version 14
+		* c0e55c2 2021-04-28 23:10:01 soonki.ji@gmail.com Version 13
+		* db55ab4 2021-04-28 23:10:01 soonki.ji@gmail.com Version 12
+		* 0d3da68 2021-04-28 23:10:01 soonki.ji@gmail.com Version 11
+		* 992c51e 2021-04-28 23:10:01 soonki.ji@gmail.com Version 10
+		* f18b4b5 2021-04-28 23:10:01 soonki.ji@gmail.com Version 9
+		* 8f85066 2021-04-28 23:10:01 soonki.ji@gmail.com Version 8
+		* 6f4707c 2021-04-28 23:09:42 soonki.ji@gmail.com Version 7
+		* 9200d09 2021-04-28 23:09:42 soonki.ji@gmail.com Version 6
+		* bf7b88e 2021-04-28 23:09:42 soonki.ji@gmail.com Version 5
+		* e6e53b3 2021-04-28 23:09:42 soonki.ji@gmail.com Version 4
+		* 14da9bb 2021-04-28 23:09:42 soonki.ji@gmail.com Version 3
+		* e725fe3 2021-04-28 23:09:42 soonki.ji@gmail.com Version 2
+		* dc6f3ab 2021-04-28 23:09:41 soonki.ji@gmail.com Version 1			<== good
+		* 2d1ce4b 2021-04-28 22:48:50 soonki.ji@gmail.com Added div
+		* f48d51b 2021-04-28 22:47:45 soonki.ji@gmail.com Updated comment
+		* 21a9005 2021-04-28 22:47:34 soonki.ji@gmail.com Updated comment
+		* e4f1fa2 2021-04-28 22:46:46 soonki.ji@gmail.com Added mul
+		* f2e57ca 2021-04-28 22:45:42 soonki.ji@gmail.com Initial commit
+
+	// suspect 40 or somewhere as first bad - 40 or higher에는 bad라고 답할 것이고, 39 or lower에는 good이라고 답할 것임.
+
+	git bisect start
+
+	git bisect bad HEAD
+
+	git bisect good dc6f3ab
+		Bisecting: 24 revisions left to test after this (roughly 5 steps)
+		[2d866c2e8e940ca68793909cdccd79b55f80dafa] Version 25
+
+	start git bisect visualize
+
+	// v25 is good
+	git bisect good
+		Bisecting: 12 revisions left to test after this (roughly 4 steps)
+		[30fd0587b1140f4c8f79c754333e56e12de73d25] Version 37
+
+	// v37 is good
+	git bisect good
+		Bisecting: 6 revisions left to test after this (roughly 3 steps)
+		[2eb9b1a4baf21744f9c7c39bd0fc29d48f753ed4] Version 43
+
+	// v43 is bad
+	git bisect bad
+		Bisecting: 2 revisions left to test after this (roughly 2 steps)
+		[281fa423d29492a5cf94df4cc9847689c17d184b] Version 40
+
+	// v40 is bad
+	git bisect bad
+		Bisecting: 0 revisions left to test after this (roughly 1 step)
+		[518779c75f4d8ddfbc0c592f2f2068892b75ce71] Version 39
+
+	// v39 is good
+	git bisect good
+		281fa423d29492a5cf94df4cc9847689c17d184b is the first bad commit
+		commit 281fa423d29492a5cf94df4cc9847689c17d184b
+		Author: soonki ji <soonki.ji@gmail.com>
+		Date:   Wed Apr 28 23:10:07 2021 -0400
+
+			Version 40
+
+		:100644 100644 6ad5e4927c9bd134e6498e5b69db911380bf4a5b 4782452fc02444c03e0c05577b0919bc249719b2 M      file.txt
+
+	"281fa423d29492a5cf94df4cc9847689c17d184b is the first bad commit" 이라는 메시지와 함께 bisecting을 마무리 함.
+
+	// bisect summary
+	git bisect log
+		git bisect start
+		# bad: [b36ee2ec552a6e6b993a648abcf63f9bed3d9957] Version 50
+		git bisect bad b36ee2ec552a6e6b993a648abcf63f9bed3d9957
+		# good: [dc6f3ab0d97750acb97fb14b0aaba2ed4aa417d6] Version 1
+		git bisect good dc6f3ab0d97750acb97fb14b0aaba2ed4aa417d6
+		# good: [2d866c2e8e940ca68793909cdccd79b55f80dafa] Version 25
+		git bisect good 2d866c2e8e940ca68793909cdccd79b55f80dafa
+		# good: [30fd0587b1140f4c8f79c754333e56e12de73d25] Version 37
+		git bisect good 30fd0587b1140f4c8f79c754333e56e12de73d25
+		# bad: [2eb9b1a4baf21744f9c7c39bd0fc29d48f753ed4] Version 43
+		git bisect bad 2eb9b1a4baf21744f9c7c39bd0fc29d48f753ed4
+		# bad: [281fa423d29492a5cf94df4cc9847689c17d184b] Version 40
+		git bisect bad 281fa423d29492a5cf94df4cc9847689c17d184b
+		# good: [518779c75f4d8ddfbc0c592f2f2068892b75ce71] Version 39
+		git bisect good 518779c75f4d8ddfbc0c592f2f2068892b75ce71
+		# first bad commit: [281fa423d29492a5cf94df4cc9847689c17d184b] Version 40
+
+----- git bisect demo again
+
+	mkdir git-bisect-demo
+
+	cd git-bisect-demo
+
+	git init .
+
+	for a in $(seq 50); do ( echo $a; echo Version $a > file.txt; git add file.txt; git commit -m "Version $a" ) done
+
+git log --oneline
+087344b Version 50
+25c958e Version 49
+765b768 Version 48
+e61bf49 Version 47
+5568f8c Version 46
+af33cbe Version 45
+89de560 Version 44
+27d31cd Version 43
+ded1d80 Version 42
+5691bc0 Version 41
+6e69046 Version 40
+975cd02 Version 39
+76933bc Version 38
+80e1ac5 Version 37
+de21421 Version 36
+6f8c902 Version 35
+4908f88 Version 34
+76f30f6 Version 33
+51f4147 Version 32
+fd1e07e Version 31
+9bdd046 Version 30
+37ffb1e Version 29
+a9a208b Version 28
+867839f Version 27
+36ff504 Version 26
+06f64d9 Version 25
+f9a4aab Version 24
+3c42d1c Version 23
+8082ed9 Version 22
+1551247 Version 21
+f285381 Version 20
+6018155 Version 19
+00b0f30 Version 18
+134bbb9 Version 17
+dd0eb10 Version 16
+6ef7fef Version 15
+5d1024e Version 14
+6164477 Version 13
+fe4b69d Version 12
+814f7cb Version 11
+cc921e6 Version 10
+2be8b29 Version 9
+d212a74 Version 8
+312abb7 Version 7
+e6203d7 Version 6
+5b0b5cc Version 5
+268754b Version 4
+3788965 Version 3
+83a5aa8 Version 2
+c88ba8f Version 1
+7004ead Initial commit
+
+	prepare a script
+		# cat true-if-bad.sh
+		#!/bin/sh
+		v=$(cat file.txt | cut -d' ' -f2)
+		test $v -ge 40
+
+		usage:
+
+			./true-if-bad.sh && git bisect bad || git bisect good
+
+			./true-if-good.sh && git bisect good || git bisect bad
+
+
+	$ git bisect start; git bisect bad HEAD
+
+	$ git bisect good c88ba8f
+
+	Bisecting: 24 revisions left to test after this (roughly 5 steps)
+	[06f64d9023d8a4281542c53d5248b1e8c45ff96a] Version 25
+
+	$ ./true-if-bad.sh && git bisect bad || git bisect good
+	Bisecting: 12 revisions left to test after this (roughly 4 steps)
+	[80e1ac5c8ff00928ea9f2c53285be2a80281f91c] Version 37
+
+	$ ./true-if-bad.sh && git bisect bad || git bisect good
+	Bisecting: 6 revisions left to test after this (roughly 3 steps)
+	[27d31cde236af17bdad266e10fe438641126d4ea] Version 43
+
+	$ ./true-if-bad.sh && git bisect bad || git bisect good
+	Bisecting: 2 revisions left to test after this (roughly 2 steps)
+	[6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+
+	$ ./true-if-bad.sh && git bisect bad || git bisect good
+	Bisecting: 0 revisions left to test after this (roughly 1 step)
+	[975cd02e2467e0e41827117f55baadf5f4709309] Version 39
+
+	$ ./true-if-bad.sh && git bisect bad || git bisect good
+	6e69046605745aaf530ceebc99c6f58ceed84f78 is the first bad commit
+	commit 6e69046605745aaf530ceebc99c6f58ceed84f78
+	Author: soonki.ji <soonki.ji@gmail.com>
+	Date:   Thu Apr 29 03:31:32 2021 +0000
+
+		Version 40
+
+	:100644 100644 1ebcec47b9043b6833d7187e3f30b67aa46ff98e f6589ef36c32f624f505c3738d267303d9f8178c M      file.txt
+
+	$ ./true-if-bad.sh && git bisect bad || git bisect good
+	6e69046605745aaf530ceebc99c6f58ceed84f78 is the first bad commit
+	commit 6e69046605745aaf530ceebc99c6f58ceed84f78
+	Author: soonki.ji <soonki.ji@gmail.com>
+	Date:   Thu Apr 29 03:31:32 2021 +0000
+
+		Version 40
+
+	:100644 100644 1ebcec47b9043b6833d7187e3f30b67aa46ff98e f6589ef36c32f624f505c3738d267303d9f8178c M      file.txt
+	$ ./true-if-bad.sh && git bisect bad || git bisect good
+	6e69046605745aaf530ceebc99c6f58ceed84f78 is the first bad commit
+	commit 6e69046605745aaf530ceebc99c6f58ceed84f78
+	Author: soonki.ji <soonki.ji@gmail.com>
+	Date:   Thu Apr 29 03:31:32 2021 +0000
+
+		Version 40
+
+	:100644 100644 1ebcec47b9043b6833d7187e3f30b67aa46ff98e f6589ef36c32f624f505c3738d267303d9f8178c M      file.txt
+	$ ./true-if-bad.sh && git bisect bad || git bisect good
+	6e69046605745aaf530ceebc99c6f58ceed84f78 is the first bad commit
+	commit 6e69046605745aaf530ceebc99c6f58ceed84f78
+	Author: soonki.ji <soonki.ji@gmail.com>
+	Date:   Thu Apr 29 03:31:32 2021 +0000
+
+		Version 40
+
+	:100644 100644 1ebcec47b9043b6833d7187e3f30b67aa46ff98e f6589ef36c32f624f505c3738d267303d9f8178c M      file.txt
+
+
+# git bisect log
+git bisect start
+# bad: [087344b8bd371e15f40ded9d4bdc8ddb1b9c3f02] Version 50
+git bisect bad 087344b8bd371e15f40ded9d4bdc8ddb1b9c3f02
+# good: [c88ba8fde702a2a0160a44bb62e1001ee9c2a06f] Version 1
+git bisect good c88ba8fde702a2a0160a44bb62e1001ee9c2a06f
+# good: [06f64d9023d8a4281542c53d5248b1e8c45ff96a] Version 25
+git bisect good 06f64d9023d8a4281542c53d5248b1e8c45ff96a
+# good: [80e1ac5c8ff00928ea9f2c53285be2a80281f91c] Version 37
+git bisect good 80e1ac5c8ff00928ea9f2c53285be2a80281f91c
+# bad: [27d31cde236af17bdad266e10fe438641126d4ea] Version 43
+git bisect bad 27d31cde236af17bdad266e10fe438641126d4ea
+# bad: [6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+git bisect bad 6e69046605745aaf530ceebc99c6f58ceed84f78
+# good: [975cd02e2467e0e41827117f55baadf5f4709309] Version 39
+git bisect good 975cd02e2467e0e41827117f55baadf5f4709309
+# first bad commit: [6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+# good: [975cd02e2467e0e41827117f55baadf5f4709309] Version 39
+git bisect good 975cd02e2467e0e41827117f55baadf5f4709309
+# first bad commit: [6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+# good: [975cd02e2467e0e41827117f55baadf5f4709309] Version 39
+git bisect good 975cd02e2467e0e41827117f55baadf5f4709309
+# first bad commit: [6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+# good: [975cd02e2467e0e41827117f55baadf5f4709309] Version 39
+git bisect good 975cd02e2467e0e41827117f55baadf5f4709309
+# first bad commit: [6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+# good: [975cd02e2467e0e41827117f55baadf5f4709309] Version 39
+git bisect good 975cd02e2467e0e41827117f55baadf5f4709309
+# first bad commit: [6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+# good: [975cd02e2467e0e41827117f55baadf5f4709309] Version 39
+git bisect good 975cd02e2467e0e41827117f55baadf5f4709309
+# first bad commit: [6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+# good: [975cd02e2467e0e41827117f55baadf5f4709309] Version 39
+git bisect good 975cd02e2467e0e41827117f55baadf5f4709309
+# first bad commit: [6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+
+--------
+
+	$ git bisect reset
+	$ git bisect start
+	$ git bisect bad HEAD
+	$ git bisect good c88ba8f
+	$ while : ; do (./true-if-bad.sh && git bisect bad || git bisect good) | tee a.tmp; grep "the first bad commit" a.tmp && break; done
+
+--------
+
+	git-find-first-bad-commit.sh
+
+		$ cat git-find-first-bad-commit.sh
+		#!/bin/sh
+		#
+		# find-first-bad-commit.sh true-if-good.sh c88ba8f [ HEAD ]
+		#
+		if [ $# -eq 0 ]; then
+				echo "usage: $(basename $0) true-if-good.sh <known_old_good_rev> [ HEAD | <known_recent_bad_rev> ]"
+				exit 1
+		fi
+		true_if_good_sh=$1
+		known_old_good_rev=$2
+		known_recent_bad_rev=${3:-HEAD}
+		git bisect reset
+		git bisect start
+		git bisect bad $known_recent_bad_rev
+		git bisect good $known_old_good_rev
+		for i in $(seq 10)
+		do
+				( sh $true_if_good_sh && git bisect good || git bisect bad ) | tee a.tmp
+				grep "the first bad commit" a.tmp && break
+		done
+		# git bisect log
+
+	put your validation logic into true-if-good.sh
+
+	demo
+
+		$ ./git-find-first-bad-commit.sh
+		usage: git-find-first-bad-commit.sh true-if-good.sh <known_old_good_rev> [ HEAD | <known_recent_bad_rev> ]
+
+		$ ./git-find-first-bad-commit.sh true-if-good.sh c88ba8f HEAD
+		Previous HEAD position was 975cd02... Version 39
+		Switched to branch 'master'
+		Bisecting: 24 revisions left to test after this (roughly 5 steps)
+		[06f64d9023d8a4281542c53d5248b1e8c45ff96a] Version 25
+		Bisecting: 12 revisions left to test after this (roughly 4 steps)
+		[80e1ac5c8ff00928ea9f2c53285be2a80281f91c] Version 37
+		Bisecting: 6 revisions left to test after this (roughly 3 steps)
+		[27d31cde236af17bdad266e10fe438641126d4ea] Version 43
+		Bisecting: 2 revisions left to test after this (roughly 2 steps)
+		[6e69046605745aaf530ceebc99c6f58ceed84f78] Version 40
+		Bisecting: 0 revisions left to test after this (roughly 1 step)
+		[975cd02e2467e0e41827117f55baadf5f4709309] Version 39
+		6e69046605745aaf530ceebc99c6f58ceed84f78 is the first bad commit
+		commit 6e69046605745aaf530ceebc99c6f58ceed84f78
+		Author: soonki.ji <soonki.ji@gmail.com>
+		Date:   Thu Apr 29 03:31:32 2021 +0000
+
+			Version 40
+
+		:100644 100644 1ebcec47b9043b6833d7187e3f30b67aa46ff98e f6589ef36c32f624f505c3738d267303d9f8178c M      file.txt
+		6e69046605745aaf530ceebc99c6f58ceed84f78 is the first bad commit

@@ -1,0 +1,596 @@
+http://git-scm.com/book/ko 요약
+
+	파일의 상태
+		untracked	unmodified	modified	staged
+
+		file5
+			??	file5
+
+		git add file5
+			A	file5
+
+		git commit -m fix file5
+
+		git push
+
+		vim 으로 변경된 파일
+
+			_M	file5
+
+		git add file5로 staged로 변경하여 commit 레디 상태로 변경
+
+			M_	file5
+
+		git push로 M_ 상태의 파일을 모두 remote로 푸시 가능함
+
+	git init
+		git add *.c
+		git add README
+		git commit -m fixed
+
+	git clone git://github.com/schacon/grit.git
+		git clone git://github.com/schacon/grit.git mygrit
+
+	git add file1				// 상태: staged, commit 필요
+		git status				// Changes to be committed 에 file1 나타남
+		vim file1
+		git status				// Changes to be commited 와 Changed but not updated 에 동시에 file1 나타남
+
+	git status -s
+		 M
+		MM
+		A
+		M
+		??
+
+	git diff
+		git diff --cached
+
+	git log --oneline master		master의 모든 log를 각 1줄로 표시
+
+	git checkout ID					중간 리비전으로 로컬 버전 교체
+
+	git checkout master				최신 버전 master으로 로컬 버전 교체
+
+	git log -p -2
+
+	git log --stat -p -2
+
+	git log --pretty=oneline
+		5730cd12a56993d42df88e6a10754cbb968ea12e fix
+
+	git log --oneline
+		5730cd1 fix
+
+	git log --pretty=format:"%h - %an, %ar : %s"
+	git log --pretty=format:"%h - %an, %ae, %ar : %s"
+	git log --pretty=format:"%h - %an, %ae, %ad, %ar : %s"
+
+	oneline 옵션과 format 옵션은 --graph 옵션과 함께 사용할 때 더 빛난다.
+
+	git log --pretty=format:"%h %s" --graph
+
+	git log 옵션
+
+		-p					패치를 보여줌
+		--stat				통계
+		--shortstat
+		--name-only
+		--name-status
+		--abbrev-commit
+		--relative-date
+		--graph
+		--pretty=[oneline,short,full,fuller,format]
+
+	조회조건
+
+	git log --since=2.weeks
+	git log --since=2.weeks --oneline
+	git log --since "2017-01-29 22:00:00" --oneline
+
+	도움말 보기
+	https://git-scm.com/book/ko/v2/Git%EC%9D%98-%EA%B8%B0%EC%B4%88-%EC%BB%A4%EB%B0%8B-%ED%9E%88%EC%8A%A4%ED%86%A0%EB%A6%AC-%EC%A1%B0%ED%9A%8C%ED%95%98%EA%B8%B0
+
+		git log --help
+
+	텍스트 검색
+
+		주석에서 검색
+		git log --grep Fix
+
+		내용에서 검색
+		git log -S "main("
+
+	--pretty=format:"<format>"에 사용 가능한 포맷 옵션들
+
+		%H 커밋 해시
+		%h 짧은 길이 커밋 해시
+		%T 트리 해시
+		%t 짧은 길이 트리 해시
+		%P 부모 해시
+		%p 짧은 길이 부모 해시
+		%an 저자 이름
+		%ae 저자 메일
+		%ad 저자 시각 (형식은 –date= 옵션 참고)
+		%ar 저자 상대적 시각
+		%cn 커미터 이름
+		%ce 커미터 메일
+		%cd 커미터 시각
+		%cr 커미터 상대적 시각
+		%s 주석
+
+	git log --since "2017-01-29 22:00:00" --pretty=format:"%h %cd %s"
+
+	여러 검색 옵션을 지정할 때 and 조건을 수행하려면 --all-match
+
+	날짜 조회
+
+	--since, --after (둘 다 inclusive, 결과가 같음)
+
+	--until, --before (둘 다 inclusive, 결과가 같음)
+
+	git commit을 했는데 빠트린 파일을 추가하려 한다면 add, amend 사용
+
+		git commit -m "Fix 1"
+		git add forgotten_file
+		git commit --amend
+
+		두 번의 커밋은 실제로 1개의 커밋으로 간주된다
+
+	git commit을 했는데 주석을 수정하고 싶으면 amend 사용
+
+		git commit --amend -m "New comment"
+
+	git add * 를 했는데 일부를 되돌리고 싶으면 reset 사용
+
+		git add *
+			파일이 .M 상태로 들어간다
+		git status
+		git reset HEAD file1
+			.M 상태가 사라진다
+
+		이렇게 하면 file1은 git commit 대상에서 제외된다
+
+	tracked 파일의 로컬 변경을 취소하고 싶다면 checkout 사용
+
+		vim file1
+		vim file2
+		git checkout -- file1
+		git status -s
+
+		로컬 파일 변경만 되돌리지 add 한 걸 되돌리는 건 아니다.
+		add 한 걸 되돌리는 건 reset
+
+			git reset -- src/main/java/com/demo/App.java
+			M. 상태를 .M으로 되돌리고
+
+			git checkout -- src/main/java/com/demo/App.java
+			.M 상태도 취소된다 로컬 변경이 모두 취소됨.
+
+	리모트 저장소 사용법
+
+		보기
+		git remote
+		git remote -v
+
+		추가
+		git remote add pb https://github.com/paulboone/ticgit	// pb는 alias
+
+		clone시 자동으로 origin이라는 alias가 추가되므로
+
+		git fetch 와 git fetch origin 은 같다
+
+		또는
+		git fetch pb 와 같이 할 수 있다
+
+	fetch
+
+		git fetch
+		git fetch origin
+
+		fetch는 로컬에 없지만 리모트에 있는 내용을 가져오지만 conflict 이 생길 경우 merge는 하지 않는다
+
+	pull
+		pull은 리모트 내용을 가져와서 merge까지 수행
+
+	push
+		git push
+		git push origin
+		git push origin master 이 세 가지는 같다.
+
+		다른 사람과 함께 작업할 때는 git push 하기 직전 git pull 을 해서 머지 후 git push 하도록 한다.
+
+	show 리모트 저장소 살펴보기
+		git remote show
+		git remote show origin
+		내가 pull을 해야 하는지 알려주는 명령 up to date 인지 local out of date 인지 보여준다
+
+	리모트 저장소 이름 변경
+		git remote rename oldname newname
+		git remote
+
+	리모트 저장소 삭제
+		git remote rm a_name
+		git remote
+
+	2.6 태그
+
+		태그 검색
+			git tag
+			git tag -l "v1.8.5"
+
+		태그 붙이기
+			Lightweight 태그	- 특정 지점에 대한 포인터 (보통 이걸 사용 추천)
+			Annotated 태그		- 이름 날짜 메시지 함께 저장
+
+		Annotated 태그
+			git tag -a v1.4 -m "my version 1.4"
+			git tag
+
+		Lightweight 태그를 만들 때는 a, s, m 옵션을 사용하지 않는다.
+			git tag v1.4-lw
+			git tag
+			git show v1.4-lw
+
+		log 기록에 대해 tag 하기
+
+			git tag -a v1.2 <hash>
+			git tag 1.1 b211517
+			git tag
+
+		git log --date=iso8601 --pretty=format:"%h %cd %s"
+
+		권장 로그
+			git log --date=format:"%Y-%m-%d %H:%M:%S" --pretty=format:"%h %cd %ae %s"
+
+		태그 공유
+			push는 tag 정보를 리모트 서버로 보내지 않는다.
+			git push origin 1.1 로 태그 1.1을 서버로 보내고
+			git pull 로 태그까지 땡긴다
+
+		특정 tag를 checkout 하기
+			git checkout -b version2 v2.0.0		태그 v2.0.0으로부터 브랜치 version2를 새로 만든다
+
+	2.7 git alias
+
+		git config --global alias.br branch
+		git config --global alias.ci commit
+		git config --global alias.co checkout
+		git config --global alias.last "log -1 HEAD"
+		git config --global alias.st status
+		git config --global alias.unstage "reset HEAD --"
+		git config --global alias.visual "!gitk"
+		git config --global user.email "soonki.ji@gmail.com"
+		git config --global user.name "Soonki Ji"
+		git config --list --global
+
+		이제 git co file 이 가능함
+
+	3.1 브랜치
+
+		git branch testing
+
+		현재 HEAD 라는 툭수한 포인터가 어디를 가리키는지 보여줌
+		git log --oneline --decorate
+
+		HEAD를 master 브랜치로 옮김
+		git checkout master
+
+		브랜치 분리 병합을 그래프로 보여주며 HEAD 포인터를 하늘색으로 표시함. 브랜치는 연두색. 태그는 노란색.
+		git log --oneline --decorate --graph --all
+
+	3.2 branch and merge
+
+		// 브랜치를 만들면서 checkout 까지
+		git checkout -b iss53
+
+		// 이 명령은 아래 두 가지의 한 줄 버전이다
+		git branch iss53
+		git checkout iss53
+
+		hotfix 라는 브랜치 따서 수정한 후 머지하기
+
+			// master 기준으로 브랜치 생성
+			git checkout master -b hotfix
+
+			// 패치 작성
+			vim file
+			git commit -a -m "Fixed hotfix"
+
+			// 패치를 master에 머지
+			git co master
+			git merge hotfix
+
+			// 브랜치 삭제
+			git branch -d hotfix
+
+		머지 시 충돌하면 git status로 확인
+
+			git merge iss53
+			git status
+
+		git mergetool 로 충돌 해결
+
+	3.3 git branch 관리
+
+			git branch					// 브랜치 보기
+
+			git branch -v
+
+			git branch --merged			// 현재 checkout 한 브랜치로 머지된 브랜치, 그러니까 master 기준으로 할 때 의미 있는 명령이겠지.
+
+			git branch --no-merged		// 현재 checkout 한 브랜치로 머지하지 않은 브랜치
+
+		머지하지 않은 브랜치는 삭제되지 않는데 강제 삭제하려면 -D 사용
+
+			git branch -D hotfix
+
+	3.5 remote branch
+
+		리모트 refs는 리모트 저장소에 있는 브랜치, 태그 등등을 의미.
+
+			git ls-remote			// 모든 리모트 refs 조회
+
+			git remote show
+
+		push 하기
+
+			serverfix라는 브랜치를 다른 사람과 공유할 때
+
+			git push <remote> <branch>
+
+			git push origin serverfix
+
+			이 때 git은 serverfix를 refs/heads/serverfix:refs/heads/serverfix로 확장한다.
+			의미는 로컬 serverfix라는 브랜치를 리모트에서도 같은 이름인 serverfix로 업데이트 한다는 것을 의미
+
+			같은 의미로 git push origin serverfix:serverfix 가 있다.
+
+			push 하면서 branch 이름을 변경하려면 아래와 같이.
+
+				git push origin serverfix:newbranchname
+
+		git fetch origin을 해도 자동으로 branch 생기는 게 아니라 수정 못 하는 origin/serverfix 포인터가 생긴다.
+
+		새로 받은 branch를 머지하려면 git merge origin/serverfix
+
+		머지하지 않고 리모트 브랜치에서 시작하는 새 브랜치를 만들 때는 git checkout -b serverfix2 origin/serverfix
+
+			리모트 serverfix에서 시작하는 새 브랜치 serverfix2가 생성된다.
+
+		트래킹 브랜치: 리모트 브랜치와 연결된 로컬의 브랜치
+
+			git checkout --track origin/serverfix 명령은 원격 serverfix 브랜치로부터 로컬에 같은 이름의 트래킹 브랜치를 만든다.
+
+			더 간단한 명령은 git co serverfix, 단 리모트에 serverfix 가 딱 한 개 있어야 함.
+
+			트래킹 브랜치를 만들면서 로컬 브랜치 이름을 변경하려면 git checkout -b newlocalname origin/serverfix
+
+		이미 로컬에 존재하는 트래킹 브랜치에서 리모트 브랜치를 추적하려면 -u 사용
+
+			git branch -u origin/serverfix		원격 브랜치 추적
+
+		추적 브랜치 설정을 확인하려면 -vv 옵션
+
+			git branch -vv
+
+			그린은 브랜치 이름
+			청색은 트래킹 브랜치와 연결된 브랜치
+
+		리모트 브랜치 삭제 --delete
+
+			git push origin --delete serverfix
+
+	3.6 Rebase
+
+		experiment를 master에 머지하는 과정
+
+			git co master
+			git merge experiment
+
+		experiment를 rebase하여 master위에다가 적용하는 과정
+
+			git co experiment
+			git rebase master
+
+		둘 다 최종적으로 experiment의 변경 내역을 master로 적용하는 것인데 rebase가 더 깨끗한 history를 만든다.
+
+		이렇게 rebase를 사용하는 경우는 아마도 그냥 참여하는 branch일 것이다.
+
+		메인 프로젝트에 패치를 보낼 준비가 되면 rebase를 하는 것이다.
+
+		브랜치 관리자는 머지할 필요가 없다. HEAD만 앞으로 이동시키면 됨.
+
+	주의: 이미 공개 저장소에 Push 한 커밋을 Rebase 하지 마라
+
+	나중에 후회하지 말고 `git pull --rebase`로 문제를 미리 방지할 수 있다는 것을 같이 작업하는 동료와 모두 함께 공유하기 바란다.
+
+	4.1 git 프로토콜
+
+		4가지: local, http, ssh, git
+
+		로컬
+
+			git clone /opt/git/project.git
+			git clone file:///opt/git/project.git
+
+		http
+
+			git clone https://example.com/gitproject.git
+
+		ssh
+
+			git clone ssh://user@server/project.git
+			git clone user@server:project.git
+
+		git (port 9418)
+
+	4.2 git 서버 설치
+
+		ssh 접속
+
+			방법1. 매번 adduser
+
+			방법2. git 계정을 만들도 모든 사용자의 공개키를 모아서 ~git/.ssh/authorized_keys에 등록
+
+			방법3. ldap 인증사용하도록 구성
+
+	4.3
+
+	4.4
+
+	4.5 git daemon
+
+	4.6 스마트 http를 지원하는 git 서버
+
+	4.7 gitweb <== 사용이 간단하므로 추천
+
+	4.8 gitlab <== 기능이 많으므로 추천
+
+	4.9 호스팅
+
+	4.1 분산 git - skip
+
+	https://git-scm.com/book/ko/v2/GitHub-GitHub-프로젝트에-기여하기
+
+	7.3 git 도구 - stashing and cleaning
+
+	7.5 git 도구 - 검색
+
+		내용 검색
+
+			// 파일 내 패턴의 라인 번호 출력
+			git grep -n pattern
+
+			// 파일 당 pattern 포함 개수
+			git greep --count pattern
+
+			// pattern을 포함하는 함수/메서드 검색
+			git grep -p pattern *.c
+
+			// 검색 건 당 blank line을 추가 (--break), 파일명 추가 (--heading)
+			git grep --break --heading -n -e "#define" --and \( -e LINK -e BUF_MAX \) v1.8.0
+
+		로그 검색
+
+			// ZLIB_BUF_MAX 패턴이 최초로 나타나거나 없어진 커밋 검색
+			git log -SZLIB_BUF_MAX --oneline
+
+			// 함수를 인식하여, 특정 함수의 모든 변경 기록, C만 되나?
+			git log -L :git_deflate_bound:zlib.c
+
+			// 함수를 인식하여, 특정 함수의 모든 변경 기록, 함수의 시작 끝을 인식하지 못할 때 사용
+			git log -L '/unsigned long git_deflate_bound/',/^}/:zlib.c
+
+		모든 커밋에서 파일 삭제하기
+
+			git filter-branch --tree-filter 'rm -f passwords.txt' HEAD
+
+	7.7 reset 명확히 알고 가기
+
+		git의 세 개의 트리를 관리
+
+			 HEAD
+
+			 Index
+
+			 working directory
+
+		HEAD		// 현 브랜치를 가리키는 포인터
+
+			git cat-file -p HEAD		// 마지막 커밋 주석 정보
+
+			git ls-tree -r HEAD			// 모든 파일의 sha-1 표시
+
+		Index		// Index는 바로 다음에 커밋할 것들. 다른 말로 Staging Area라고 한다.
+
+			git commit 명령을 실행할 때 git이 처리할 것들이 있는 곳.
+
+			git ls-files -s		// staged files
+
+			git ls-files -s --abbrev
+
+			git ls-files -c		// 캐시 파일 목록
+
+			git ls-files -m		// 변경된 파일 목록
+
+			git ls-files -o		// untracked (other) 파일
+
+		워킹 디렉토리
+
+			HEAD와 Index는 .git 디렉토리 안에 저장되지만
+			워킹 디렉토리는 우리가 보는 바로 그 디렉토리와 파일들이다.
+
+	git-scm.com/book/ko/v2/Git-도구-Reset-명확히-알고-가기
+
+		git reset 9e5e6a4 --soft		// 가장 최근의 commit을 되돌린다
+
+		git reset --soft HEAD~			// HEAD를 이동시킨다, 가장 최근의 commit을 취소한다.
+
+		git reset --mixed HEAD~			// 가장 최근의 commit, add를 취소한다.
+		git reset HEAD~					// --mixed와 같다.
+
+		git reset --hard HEAD~			// 가장 최근의 commit, add, change를 모두 취소한다.
+
+		// 아래 두 명령은 같다. commit, add를 취소하고 change는 남겨둔다.
+		git reset file.txt
+		git reset --mixed HEAD file.txt
+
+		어렵다. git-scm.com/book/ko/v2/Git-도구-Reset-명확히-알고-가기 맨 밑 다시 보자.
+
+	git config --global rerere.enabled true
+
+		reuse recorded resolution
+
+		를 켜두고 작은 conflict을 해결하면
+
+		git rerere
+
+		명령을 내릴 때 과거 기록을 참조하여 자동 해결해준다.
+
+	git-scm.com/book/ko/v2/Git-도구-Git으로-버그-찾기
+
+		git blame
+
+	8.1 git 설정
+
+		설정 파일
+
+			1
+			/etc/gitconfig 을 가장 처음 사용
+			또는
+			git config --system 옵션을 주면 여기서 로딩
+
+			2
+			~/.gitconfig	두번째 파일. 이 설정이 #1을 덮어쓴다
+
+			3.
+			.git/config		이 설정이 #1, #2를 덮어쓴다.
+
+		커밋 템플릿
+
+			~/.gitmessage.txt 파일에
+			subject line
+			what happened
+			[ticket: XX]
+
+			라고 넣어준 후
+
+			git config --global commit.template ~/.gitmessage.txt
+
+			커밋을 해보면
+
+			위 내용이 커밋 메시지 앞에 자동으로 삽입된다.
+
+		pager를 less 외의 다른 것으로 바꾸고 싶으면
+
+			git config --global core.pager ""
+
+			git config --global core.pager "more"
+
+		core.excludesfile
+
+			.gitignore 에 해당 패턴을 적으면 로컬 디렉토리에서만 적용됨
+			core.excludesfiles에 등록하면 전역 적용됨
+
+			git config --global core.excludesfile ~/.gitignore_global

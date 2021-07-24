@@ -1,0 +1,19 @@
+git config 우선순위
+
+	1
+	$(prefix)/etc/gitconfig				이 설정이 'system-wide' 스코프.
+	/etc/gitconfig
+	C:\Program Files\Git\etc\gitconfig
+
+	2
+	$XDG_CONFIG_HOME/git/config			이 설정은 user-specific 설정.
+	$HOME/.config/git/config
+
+	3
+	~/.gitconfig						이 설정이 'global' 소스임. 2의 값을 3이 덮어 씀.
+
+	4
+	$GIT_DIR/config
+	.git/config
+
+	이러하니까 3 global을 변경해주면 되는 것이고, repo 별로 설정을 하려면 4에 설정한다.
