@@ -1,0 +1,41 @@
+https://dzone.com/articles/top-35-git-commands-with-examples-and-bonus
+
+3. git initgit init <repo>
+
+5. git add <file>  파일 하나 추가
+git add -u   변경된 파일 추가
+git add *   변경된 파일과 모든 새 파일 추가
+
+8.  git branch  // 브랜치 표시
+git branch --all  // 모든 브랜치 표시
+git branch <new_branch_name>  // 새 브랜치 생성
+git branch -d <new_branch_name>  // 브랜치 삭제
+
+9. git checkout <branch_name>  // 다른 브랜치 checkout
+git checkout -b <new_branch_name>  // 새 브랜치를 만들고 checkout
+
+13. git fetch  // 내용과 metadata 모두 다운로드
+
+14. git pull  // 내용만 다운로드
+git pull --rebase  // 리모트 것 모두 받고 내것 다시 적용 (추천, 히스토리 깔끔)
+
+15. git stash
+git stash list
+git stash apply
+
+20. git merge <branch_name>  // 두 브랜치 머지, 아직 안 써봤네.
+
+21. git rebase <base>  // 여러 브랜치를 합칠 때 사용, 안 써봤네
+
+23.  git cherry-pick <commit-hash>  // 임의의 커밋을 임의의 브랜치로
+
+24. git archive --format zip HEAD > archive-HEAD.zip  // 백업하는 것인가
+
+25. git pull --rebase  // merge 보다는 rebase 지.
+
+26. git blame <file>  // 누가 어느 라인을 변경했나 조사
+
+30. git diff HEAD <filename>
+git diff <source-branch> <target-branch>
+
+31. git citool  // git commit의 그래픽 버전
